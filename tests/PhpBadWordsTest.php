@@ -28,19 +28,19 @@ class PhpBadWordsTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function testCustomDictionary_true() {
-    $obj = new PhpBadWords( __DIR__ . "/../src/dictionary.php" );
+    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
     $obj->setText("you are an assistent");
     $this->assertEquals( true , $obj->check() );
   }
 
   public function testCustomDictionary_false() {
-    $obj = new PhpBadWords( __DIR__ . "/../src/dictionary.php" );
+    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
     $obj->setText("you are an assistent");
     $this->assertEquals( false , $obj->checkAlone() );
   }
 
   public function testCustomDictionary_false_1() {
-    $obj = new PhpBadWords( __DIR__ . "/../src/dictionary.php" );
+    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
     $obj->setText("you have an ass");
     $this->assertEquals( true , $obj->checkAlone() );
   }
