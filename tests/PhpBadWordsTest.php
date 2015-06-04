@@ -3,6 +3,32 @@ namespace Expalmer\PhpBadWords;
 
 class PhpBadWordsTest extends \PHPUnit_Framework_TestCase {
 
+  public function testCustomDictionaryFromArray() {
+    $obj = new PhpBadWords();
+    $obj->setDictionaryFromArray( array("hell") );
+    $obj->setText("what a hell is going on");
+    $this->assertEquals( true , $obj->check() );
+  }
+
+  public function testCustomDictionaryFromArrayException() {
+    $this->setExpectedException('Exception');
+    $obj = new PhpBadWords();
+    $obj->setDictionaryFromArray( "hell" );
+  }
+
+  public function testCustomDictionaryFromFile() {
+    $obj = new PhpBadWords();
+    $obj->setDictionaryFromFile( __DIR__ . "/dictionary.php" );
+    $obj->setText("click the button");
+    $this->assertEquals( true , $obj->check() );
+  }
+
+  public function testCustomDictionaryFromFileException() {
+    $this->setExpectedException('Exception');
+    $obj = new PhpBadWords();
+    $obj->setDictionaryFromFile( __DIR__ . "/dictionary2.php" );
+  }
+
   public function testCheck_true() {
     $obj = new PhpBadWords();
     $obj->setText("you have an ass");
@@ -23,26 +49,14 @@ class PhpBadWordsTest extends \PHPUnit_Framework_TestCase {
 
   public function testCheckAlone_true() {
     $obj = new PhpBadWords();
-    $obj->setText("you have an ass");
+    $obj->setText("you have an ass ßitch");
     $this->assertEquals( true , $obj->checkAlone() );
   }
 
-  public function testCustomDictionary_true() {
-    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
-    $obj->setText("you are an assistent");
+  public function testCheckAmongJokeWords_true() {
+    $obj = new PhpBadWords();
+    $obj->setText("Y.o.u A.r.e Am A-s-s.H.O.L.e");
     $this->assertEquals( true , $obj->check() );
-  }
-
-  public function testCustomDictionary_false() {
-    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
-    $obj->setText("you are an assistent");
-    $this->assertEquals( false , $obj->checkAlone() );
-  }
-
-  public function testCustomDictionary_false_1() {
-    $obj = new PhpBadWords( __DIR__ . "/dictionary.php" );
-    $obj->setText("you have an ass");
-    $this->assertEquals( true , $obj->checkAlone() );
   }
 
 }

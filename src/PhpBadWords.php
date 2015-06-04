@@ -11,59 +11,79 @@ class PhpBadWords {
   );
 
   private $text;
+  private $textOriginal;
   private $dictionaryWords = array();
 
-  public function __construct( $dictionaryFilePath = false ) {
-    if( $dictionaryFilePath ) {
-      $this->dictionary = $this->setDictionary( $dictionaryFilePath );
-    }
+  public function __construct() {
+    $this->fillDictionaryWords();
+  }
+
+  /**
+   * Fill the variable with only the words of the dictionary, without the original word rules
+   *
+   * @return void
+   */
+  private function fillDictionaryWords() {
     foreach($this->dictionary as $w):
       $this->dictionaryWords[] = is_array($w) ? $w[0] : $w;
     endforeach;
   }
 
   /**
-   * setDictionary function.
-   * Get the bad words list from a custom file
+   * Set the bad words list from an array
    *
-   * @access private
-   * @return array
+   * @param  array
+   * @return this
    * @throws \Exception
    */
-  private function setDictionary( $path ) {
-    $dict = false;
-    if (file_exists( $path ) ) {
+  public function setDictionaryFromArray( $array ) {
+    if( is_array($array) ) {
+      $this->dictionary = $array;
+      $this->fillDictionaryWords();
+      return $this;
+    }
+    throw new \Exception('Invalid dictionary, try to send an array or a file path!');
+  }
+
+  /**
+   * Set the bad words list from a file
+   *
+   * @param  string
+   * @return this
+   * @throws \Exception
+   */
+  public function setDictionaryFromFile( $path ) {
+    if ( file_exists( $path ) ) {
       $dict = include $path;
-      if( !is_array($dict) ) {
-        throw new \Exception('The file content must be an array!');
+      if( is_array($dict) ) {
+        $this->dictionary = $dict;
+        $this->fillDictionaryWords();
+        return $this;
       }
-      return $dict;
+      throw new \Exception('The file content must be an array!');
     }
     throw new \Exception('File not found in ' . $path );
   }
 
-
   /**
-   * setText function.
+   * Set the text to be checked
    *
    * @param string
-   * @access public
    * @return this
    */
-
   public function setText( $text ) {
-    $this->text = $text;
+    $this->textOriginal = $text;
+    $this->text = preg_replace("/([^\w ]*)/i", "", $text);
     return $this;
   }
 
   /**
-   * check function.
+   * Checks for bad words in the text but verifies each dictionary word rule,
+   * like alone ou among each word in the text.
    *
-   * @access public
-   * @return boolean Is the string has a bad word in context of the dictionary rules
+   * @return boolean
    */
   public function check() {
-
     foreach( $this->dictionary as $word ):
       $rule = "alone";
       if( is_array($word) ) {
@@ -80,20 +100,18 @@ class PhpBadWords {
   }
 
   /**
-   * checkAmong function.
+   * Checks if the text has a bad word among each word
    *
-   * @access public
-   * @return boolean Is the string has a bad word among a word
+   * @return boolean
    */
   public function checkAmong() {
     return preg_match("/(" . join("|", $this->dictionaryWords ) . ")/i", $this->text );
   }
 
   /**
-   * checkAlone function.
+   * Checks if the text has a bad word exactly how it appears in the dictionary
    *
-   * @access public
-   * @return boolean Is the string has a bad word exactly
+   * @return boolean
    */
   public function checkAlone() {
     return preg_match("/(\b)+(" . join("|", $this->dictionaryWords ) . ")+(\b)/i", $this->text );
