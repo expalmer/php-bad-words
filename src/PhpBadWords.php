@@ -105,7 +105,7 @@ class PhpBadWords {
    * @return boolean
    */
   public function checkAmong() {
-    return preg_match("/(" . join("|", $this->dictionaryWords ) . ")/i", $this->text );
+    return !!preg_match("/(" . join("|", $this->dictionaryWords ) . ")/i", $this->text );
   }
 
   /**
@@ -114,7 +114,7 @@ class PhpBadWords {
    * @return boolean
    */
   public function checkAlone() {
-    return preg_match("/(\b)+(" . join("|", $this->dictionaryWords ) . ")+(\b)/i", $this->text );
+    return !!preg_match("/(\b)+(" . join("|", $this->dictionaryWords ) . ")+(\b)/i", $this->text );
   }
 
 }
