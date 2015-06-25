@@ -90,6 +90,7 @@ class PhpBadWords {
         $rule = isset($word[1]) ? $word[1] : $rule;
         $word = $word[0];
       }
+      $word = preg_replace("/([^\w ]*)/i", "", $word);
       if( "among" === $rule ) {
         if( preg_match("/(" . $word . ")/i", $this->text ) ) return true;
       } else {

@@ -59,4 +59,11 @@ class PhpBadWordsTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( true , $obj->check() );
   }
 
+  public function testEmailInText() {
+    $obj = new PhpBadWords();
+    $obj->setDictionaryFromFile( __DIR__ . "/dictionary.php" );
+    $obj->setText("I sent to you an email to a-email-address@gmail.com ok");
+    $this->assertEquals( true , $obj->check() );
+  }
+
 }
