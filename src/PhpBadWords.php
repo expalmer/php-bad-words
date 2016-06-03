@@ -73,7 +73,7 @@ class PhpBadWords {
    */
   public function setText( $text ) {
     $this->textOriginal = $text;
-    $this->text = preg_replace("/([^\w ]*)/i", "", $text);
+    $this->text = preg_replace("/([^\w ]*)/iu", "", $text);
     return $this;
   }
 
@@ -90,11 +90,11 @@ class PhpBadWords {
         $rule = isset($word[1]) ? $word[1] : $rule;
         $word = $word[0];
       }
-      $word = preg_replace("/([^\w ]*)/i", "", $word);
+      $word = preg_replace("/([^\w ]*)/iu", "", $word);
       if( "among" === $rule ) {
-        if( preg_match("/(" . $word . ")/i", $this->text ) ) return true;
+        if( preg_match("/(" . $word . ")/iu", $this->text ) ) return true;
       } else {
-        if( preg_match("/(\b)+(" . $word . ")+(\b)/i", $this->text ) ) return true;
+        if( preg_match("/(\b)+(" . $word . ")+(\b)/iu", $this->text ) ) return true;
       }
     endforeach;
     return false;
@@ -106,7 +106,7 @@ class PhpBadWords {
    * @return boolean
    */
   public function checkAmong() {
-    return !!preg_match("/(" . join("|", $this->dictionaryWords ) . ")/i", $this->text );
+    return !!preg_match("/(" . join("|", $this->dictionaryWords ) . ")/iu", $this->text );
   }
 
   /**
@@ -115,7 +115,7 @@ class PhpBadWords {
    * @return boolean
    */
   public function checkAlone() {
-    return !!preg_match("/(\b)+(" . join("|", $this->dictionaryWords ) . ")+(\b)/i", $this->text );
+    return !!preg_match("/(\b)+(" . join("|", $this->dictionaryWords ) . ")+(\b)/iu", $this->text );
   }
 
 }
